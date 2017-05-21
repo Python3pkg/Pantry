@@ -24,20 +24,20 @@ def on_first_run():
     with pantry('demo.pk') as db:
         for word in wordbank.split():
             api_result = magic_api(word)
-            db[word] = dict(zip(schema, api_result))
+            db[word] = dict(list(zip(schema, api_result)))
 
 def update():
 
     with pantry('demo.pk') as db:
-        for k, v in sorted(db.items(), key=lambda x: x[1]['cached_until']):
+        for k, v in sorted(list(db.items()), key=lambda x: x[1]['cached_until']):
             if v['cached_until'] < datetime.now():
-                print('{} is being updated'.format(k))
+                print(('{} is being updated'.format(k)))
                 result, cached_until = magic_api(k)
                 v['result'] = result
                 v['cached_until'] = cached_until
             else:
                 time_left = (v['cached_until'] - datetime.now()).seconds
-                print('{} has {} seconds until it needs updated'.format(k, time_left))
+                print(('{} has {} seconds until it needs updated'.format(k, time_left)))
 
 
 if __name__ == "__main__":
